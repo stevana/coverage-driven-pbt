@@ -41,13 +41,14 @@ What are the odds that a property-based testing tool (without
 coverage-guidance) would be able to find the error?
 
 To make the calculation easier, let's say that we always generate arrays
-of length $4$. A byte consists of eight bits, so it has $2^8$ possible
-values. That means that the probability is
-$\frac{1}{2^8} \cdot \frac{1}{2^8} \cdot
-\frac{1}{2^8} \cdot \frac{1}{2^8} = (\frac{1}{2^8})^4 = \frac{1}{2^{32}}$
-which is approximately $1$ in $4$ billion. In a realistic test suite, we
-wouldn't restrict the length of the array to be $4$, and hence the
-probability will be even worse.
+of length $4$. An ASCII character consists of seven bits, so it has
+$2^7$ possible values.
+
+That means that the probability is
+$\frac{1}{2^7} \cdot \frac{1}{2^7} \cdot
+\frac{1}{2^7} \cdot \frac{1}{2^7} = (\frac{1}{2^7})^4 = 3.72529*10^{-7}%$.
+For comparison, the probability of winning the lottery (the Powerball
+jackpot) is $1$ in $292.2$ million $= 3.42231 \cdot 10^{-7}%$.
 
 With coverage-guidance we keep track of inputs that resulted in
 increased coverage. So, for example, if we generate the array
@@ -55,8 +56,8 @@ increased coverage. So, for example, if we generate the array
 that and start generating longer arrays that start with `'b'` and see if
 we get even further, etc. By building on previous successes in getting
 more coverage, we can effectively reduce the problem to only need
-$\frac{1}{2^8} + \frac{1}{2^8} + \frac{1}{2^8} + 
-\frac{1}{2^8} = \frac{1}{2^8} \cdot 4 = \frac{1}{2^{10}} = \frac{1}{1024}$.
+$\frac{1}{2^7} + \frac{1}{2^7} + \frac{1}{2^7} + 
+\frac{1}{2^7} = 3.125%$.
 
 In other words coverage-guidance turns an exponential problem into a
 polynomial problem!
@@ -326,15 +327,16 @@ generation rounds would be annoying and slow. I thought that in the best
 case scenario the compiler might provide a library which exposes the
 coverage information[^3].
 
-It wasn't until I started researching this post that I realised that
-AFL, and most coverage-guided fuzzers since, actually inject custom
-coverage capturing code into compiled programs at every branch point or
-[basic block](https://en.wikipedia.org/wiki/Basic_block). It's explained
-in more detail in the
+When I started researching this post that I realised that AFL, and most
+coverage-guided fuzzers since, don't use the compiler's coverage
+statistics but actually inject custom coverage capturing code into
+compiled programs at every branch point or [basic
+block](https://en.wikipedia.org/wiki/Basic_block). It's explained in
+more detail in the
 [whitepaper](https://lcamtuf.coredump.cx/afl/technical_details.txt). The
 main reason they do it is because of performance, not because it's
-necessarily easier, in fact I still don't understand exactly how it
-works.
+necessarily easier than grabbing it from the compiler, so this didn't
+really help me.
 
 It wasn't until I read about Antithesis' ["sometimes
 assertions"](https://antithesis.com/docs/best_practices/sometimes_assertions.html)
