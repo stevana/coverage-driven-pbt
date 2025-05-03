@@ -2,7 +2,7 @@
 
 *Work in progress, please don't share, but do feel free to get involved!*
 
-Almost ten years ago, back in 2015, Dan Luu wrote a
+Ten years ago, back in 2015, Dan Luu wrote a
 [post](https://danluu.com/testing/) asking why coverage-guided property-based
 testing wasn't a thing. 
 
@@ -671,42 +671,7 @@ this topic, feel free to get in [touch](https://stevana.github.io/about.html)!
 
 [^1]: This example is due to Dmitry Vyukov, the main author of
     [go-fuzz](https://github.com/dvyukov/go-fuzz), but it's basically an easier
-    to understand version of the example from Dan Luu's post. For comparison,
-    here's Dan's example in full:
-
-    ```
-    // Checks that a number has its bottom bits set
-    func some_filter(x int) bool {
-    	for i := 0; i < 16; i = i + 1 {
-    		if !(x&1 == 1) {
-    			return false
-    		}
-    		x >>= 1
-    	}
-    	return true
-    }
-    
-    // Takes an array and returns a non-zero int
-    func dut(a []int) int {
-    	if len(a) != 4 {
-    		return 1
-    	}
-    
-    	if some_filter(a[0]) {
-    		if some_filter(a[1]) {
-    			if some_filter(a[2]) {
-    				if some_filter(a[3]) {
-    					return 0 // A bug! We failed to return non-zero!
-    				}
-    				return 2
-    			}
-    			return 3
-    		}
-    		return 4
-    	}
-    	return 5
-    }
-    ```
+    to understand version of the example from Dan Luu's post. 
 
 [^2]: For more details about how it works, see the [AFL
     "whitepaper"](https://lcamtuf.coredump.cx/afl/technical_details.txt) and
