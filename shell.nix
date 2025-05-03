@@ -10,5 +10,6 @@ pkgs.mkShell {
     stylish-haskell
     proselint
     pandoc
+    vale
   ];
 }

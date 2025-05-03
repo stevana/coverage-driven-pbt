@@ -137,7 +137,7 @@ Fuzzing only looks for crashes, while property-based testing lets you specify
 arbitrary relations that should hold between the input and output of the system
 under test. For example, we can generate binary search trees and check that
 after we insert something into an arbitrary binary search tree then it will
-remain sorted (when we do an inorder traversal). Fuzzing can't check such
+remain sorted (when we do an in-order traversal). Fuzzing can't check such
 properties, and furthermore because they generate random bytes it's unlikely
 that they'll even generate a valid binary search tree to begin with (without
 lots of coverage-driven testing).
@@ -573,8 +573,9 @@ We'll see spin away, but not actually find the bad string:
 ^CInterrupted.
 ```
 
-I stopped it after about 32k tries, in theory we'd need more than 4 billion
-attempts to find the bad string using this approach.
+I stopped it after about 32k tries. Recall from the motivation section that the
+probability of generating the bad string is about as likely as winning the
+lottery (of course we can run tests faster than play the lottery, but still).
 
 Whereas if we use coverage-guided generation:
 
@@ -624,9 +625,8 @@ property-based testing tool, QuickCheck, in about 35 lines of code.
 Coverage-guidance effectively reduced a exponential problem into a polynomial
 one, by building on previous test runs' successes in increasing the coverage.
 
-The solution does change the QuickCheck API slightly by requring a property on
+The solution does change the QuickCheck API slightly by requiring a property on
 a list of `a`, rather than merely `a`, so it's not suitable for all properties.
-
 I think this limitation isn't so important, because going further I'd like to
 apply coverage-guidance to testing stateful systems. When testing stateful
 systems, which I've written about
@@ -648,15 +648,25 @@ if input[0] == 'b'
 ```
 
 If we generate an input that starts with 'o' (rather than 'b'), then we'll get
-stuck never finding the error.
+stuck never finding the error. Real coverage-guided tools, like AFL, will not
+get stuck like that. While I have a variant of the code that can cope with
+this, I chose to present the above greedy version because it's simpler. 
 
-Real coverage-guided tools, like AFL, will not get stuck like that. While I
-have a variant of the code that can cope with this, I chose to present the
-above greedy version because it's simpler. 
+Another improvement would be to allow for sometimes assertions to be present in
+the system under test, completely separate from the property. Potentially even
+in a completely different programming language than that of which the property
+is implemented in. This would be closer to what Anithesis does, however it
+requires some communication between the system under test and the test executor
+which complicates things.
 
-I might write another post with a more AFL-like solution at some later point,
-but I'd also like to encourge others to port these ideas to your favorite
-language and experiment!
+Thanks for making all the way to the end of the post. I hope I've managed to
+convince you that adding coverage-guidence to property-based testing doesn't
+have to be that complicated, while at the same time it can make testing more
+effective. I'd also like to encourage you to try to port these ideas to your
+favorite language and experiment!
+
+Lastly, if you got any questions, comments, or would like to work with me on
+this topic, feel free to get in [touch](https://stevana.github.io/about.html)!
 
 
 [^1]: This example is due to Dmitry Vyukov, the main author of

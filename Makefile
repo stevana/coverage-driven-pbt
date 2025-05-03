@@ -4,3 +4,5 @@ README.md: README-unprocessed.md
 		--to=gfm \
 		--output $@ \
 		$? 
+check:
+	vale README-unprocessed.md
