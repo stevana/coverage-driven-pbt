@@ -322,19 +322,17 @@ information from?
 When I've been thinking about how to implement coverage-guided
 property-based testing in the past, I always got stuck thinking that
 parsing the coverage output from the compiler in between test case
-generation rounds would be annoying and slow.
-
-I thought that in the best case scenario the compiler might provide a
-library which exposes the coverage information[^3].
+generation rounds would be annoying and slow. I thought that in the best
+case scenario the compiler might provide a library which exposes the
+coverage information[^3].
 
 It wasn't until I started researching this post that I realised that
 AFL, and most coverage-guided fuzzers since, actually inject custom
 coverage capturing code into compiled programs at every branch point or
 [basic block](https://en.wikipedia.org/wiki/Basic_block). It's explained
 in more detail in the
-[whitepaper](https://lcamtuf.coredump.cx/afl/technical_details.txt).
-
-The main reason they do it is because of performance, not because it's
+[whitepaper](https://lcamtuf.coredump.cx/afl/technical_details.txt). The
+main reason they do it is because of performance, not because it's
 necessarily easier, in fact I still don't understand exactly how it
 works.
 
@@ -394,11 +392,11 @@ property-based testing library is implemented. For the sake of
 self-containment, let's reproduce the essential parts of QuickCheck as
 defined in the appendix of the original
 [paper](https://dl.acm.org/doi/10.1145/351240.351266) that first
-introduced property-based testing (ICFP, 2000).
+introduced property-based testing (ICFP, 2000)[^6].
 
 #### Generating input data
 
-Let's start with the generator[^6], which is used to generate random
+Let's start with the generator[^7], which is used to generate random
 inputs to the software under test:
 
 ``` haskell
@@ -439,7 +437,7 @@ vector n = sequence [ arbitrary | _i <- [1..n] ]
 
 Instead of defining generators directly for different datatypes,
 QuickCheck first wraps generators in a type class called
-`Arbitrary`[^7]:
+`Arbitrary`[^8]:
 
 ``` haskell
 class Arbitrary a where
@@ -685,7 +683,7 @@ As we can see, all of the lists that get generated are less than 3
 elements long! This is perhaps not what we expected. However if we
 consider that precondition says that the list must be sorted, then it
 should become clear that it's unlikely to generate such longer such
-lists completely by random[^8].
+lists completely by random[^9].
 
 ### The extension to add coverage-guidance
 
@@ -693,7 +691,7 @@ Now let's add coverage-guidance to it using the machinery for collecting
 statistics about the generated data.
 
 The function that checks a property with coverage-guidance slight
-different from `quickCheck`[^9]:
+different from `quickCheck`[^10]:
 
 ``` haskell
 coverCheck :: (Arbitrary a, Show a) => Config -> ([a] -> Property)  -> IO ()
@@ -801,7 +799,7 @@ testBad' = coverCheck config bad
 ```
 
 We find the bad string pretty quickly. I'm using verbose output here so
-you can see how it first find the `"b"`, then `"ba"`, etc[^10]:
+you can see how it first find the `"b"`, then `"ba"`, etc[^11]:
 
     >>> testBad'
     0: "n"          23: "#"         46: "bai"       69: "badb"
@@ -939,20 +937,25 @@ favorite language and experiment!
     introduced property-based testing. It's interesting to note that the
     collecting statistics functionality is older than shrinking.
 
-[^6]: We'll not talk about the `coarbitrary` method of the `Arbitrary`
+[^6]: I gave a [talk](https://bobkonf.de/2025/stevana.html) at BOBKonf
+    2025 where I sketched an even simpler implementation of
+    coverage-guided property-based testing, however that code is
+    incomplete and doesn't run.
+
+[^7]: We'll not talk about the `coarbitrary` method of the `Arbitrary`
     type class, which is used to generate functions, in this post.
 
-[^7]: The reason for wrapping `Gen` in the `Arbitrary` type class is so
+[^8]: The reason for wrapping `Gen` in the `Arbitrary` type class is so
     that generators don't have to be passed explicitly. Not everyone
     agrees that this is a good idea, as type class instances cannot be
     managed by the module system.
 
-[^8]: The standard workaround here is to introduce a wrapper type for
+[^9]: The standard workaround here is to introduce a wrapper type for
     which we write a custom generator which generates a random list and
     then sorts it before returning. That way no pre-condition is needed,
     as the input will be sorted by construction so to say.
 
-[^9]: It might be interesting to note that we can implement this
+[^10]: It might be interesting to note that we can implement this
     signature using the original combinators:
 
     ``` haskell
@@ -964,5 +967,5 @@ favorite language and experiment!
         genList gen = sized $ \len -> replicateM len gen
     ```
 
-[^10]: To save vertical space I've also arranged the output in columns
+[^11]: To save vertical space I've also arranged the output in columns
     rather than one per line.
