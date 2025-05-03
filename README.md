@@ -48,7 +48,8 @@ That means that the probability is
 $\frac{1}{2^7} \cdot \frac{1}{2^7} \cdot
 \frac{1}{2^7} \cdot \frac{1}{2^7} = (\frac{1}{2^7})^4 = 3.72529 \cdot
 10^{-7}$%. For comparison, the probability of winning the lottery (the
-Powerball jackpot) is $1$ in $292.2$ million $= 3.42231 \cdot 10^{-7}$%.
+Powerball jackpot) is $1$ in $292.2$ million
+$$= 3.42231 \cdot 10^{-7}\%$$.
 
 With coverage-guidance we keep track of inputs that resulted in
 increased coverage. So, for example, if we generate the array
