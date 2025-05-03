@@ -869,9 +869,13 @@ example:
 
 If we generate an input that starts with 'o' (rather than 'b'), then
 we'll get stuck never finding the error. Real coverage-guided tools,
-like AFL, will not get stuck like that. While I have a variant of the
-code that can cope with this, I chose to present the above greedy
-version because it's simpler.
+like AFL, will not get stuck like that. What we need is some way to
+backtrack. Currently the only mutation of the input that our algorithm
+does is to try to append another character to the string, but we could
+also imagine other mutations such as deleting or editing a character.
+Another way to avoid getting stuck in local maxima is to simply give up
+on an input, and try a new one, if we haven't managed to make any
+progress on the coverage after some number of attempts.
 
 Another improvement would be to allow for sometimes assertions to be
 present in the system under test, completely separate from the property.
