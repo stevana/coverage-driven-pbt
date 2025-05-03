@@ -45,9 +45,9 @@ length $4$. An ASCII character consists of seven bits, so it has $2^7$ possible
 values.
 
 That means that the probability is $\frac{1}{2^7} \cdot \frac{1}{2^7} \cdot
-\frac{1}{2^7} \cdot \frac{1}{2^7} = 3.72529 \cdot 10^{-7}\\%$. For comparison,
+\frac{1}{2^7} \cdot \frac{1}{2^7} = 3.72529 \cdot 10^{-9}$. For comparison,
 the probability of winning the lottery (the Powerball jackpot) is $1$ in
-$292.2$ million $= 3.42231 \cdot 10^{-7}\\%$.
+$292.2$ million $= 3.42231 \cdot 10^{-9}$.
 
 With coverage-guidance we keep track of inputs that resulted in increased
 coverage. So, for example, if we generate the array `[]byte{'b'}` we get
@@ -55,7 +55,7 @@ further into the nested ifs, and so we take note of that and start generating
 longer arrays that start with `'b'` and see if we get even further, etc. By
 building on previous successes in getting more coverage, we can effectively
 reduce the problem to only need $\frac{1}{2^7} + \frac{1}{2^7} + \frac{1}{2^7} + 
-\frac{1}{2^7} = 3.125\\%$.
+\frac{1}{2^7} = 0.03125$.
 
 In other words coverage-guidance turns an exponential problem into a polynomial
 problem!
